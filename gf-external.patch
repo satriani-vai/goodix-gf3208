@@ -1,13 +1,33 @@
 diff --git a/Makefile b/Makefile
-index c820d0b..a657221 100644
+index c820d0b..ee7c36d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,11 @@
 -obj-$(CONFIG_FINGERPRINT_GOODIX_GF3208) += gf_spi.o platform.o netlink.o
-+obj-m = gf.o
-+gf-y = gf_spi.o platform.o netlink.o
++obj-m = spi-gf.o
++spi-gf-y = gf_spi.o platform.o netlink.o
  
++KVERSION := $(shell uname -r)
++
++all:
++	$(MAKE) -C "/lib/modules/$(KVERSION)/build" M="$(PWD)" modules
++
++clean:
++	$(MAKE) -C "/lib/modules/$(KVERSION)/build" M="$(PWD)" clean
  
+diff --git b/dkms.conf b/dkms.conf
+new file mode 100644
+index 0000000..e083fdf
+--- /dev/null
++++ b/dkms.conf
+@@ -0,0 +1,7 @@
++PACKAGE_NAME="@_PKGBASE@"
++PACKAGE_VERSION="@PKGVER@"
++CLEAN="make clean"
++MAKE[0]="make all KVERSION=$kernelver"
++BUILT_MODULE_NAME[0]="spi-gf"
++DEST_MODULE_LOCATION[0]="/kernel/drivers/fingerprint"
++AUTOINSTALL="yes"
 diff --git a/gf_spi.c b/gf_spi.c
 index 619322f..751f7d5 100644
 --- a/gf_spi.c

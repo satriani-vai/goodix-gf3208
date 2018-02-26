@@ -11,31 +11,27 @@ depends=('dkms' 'subversion' 'linux-headers')
 conflicts=("${_pkgbase}")
 #install=${pkgname}.install
 source=("${_pkgbase}-${pkgver}::svn+https://github.com/yangyangnau/android_kernel_xiaomi_msm8937/branches/cm-13.0/drivers/fingerprint/goodix"
-        'dkms.conf'
         'gf-external.patch')
 md5sums=('SKIP'
-         'SKIP'
          'SKIP')
 
-build() {
+prepare() {
   cd ${_pkgbase}-${pkgver}
-  patch -p1 -i "${srcdir}"/gf-external.patch
+  patch -N -p1 -i "${srcdir}"/gf-external.patch
 }
 
 package() {
   # Install
   msg2 "Starting make..."
   cd ${_pkgbase}-${pkgver}
-  make -C /lib/modules/`uname -r`/build M=$PWD
 
-  # Copy dkms.conf
-  install -Dm644 ../dkms.conf "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.conf
+	install -dm 755 ${pkgdir}/usr/src/
+  # Copy sources (including Makefile)
+  cp -r "${srcdir}/${_pkgbase}-${pkgver}" "${pkgdir}/usr/src/${_pkgbase}-${pkgver}"
 
   # Set name and version
   sed -e "s/@_PKGBASE@/${_pkgbase}/" \
       -e "s/@PKGVER@/${pkgver}/" \
       -i "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.conf
 
-  # Copy sources (including Makefile)
-  cp -r "${srcdir}/${_pkgbase}-${pkgver}/"* "${pkgdir}/usr/src/${_pkgbase}-${pkgver}/"
 }
