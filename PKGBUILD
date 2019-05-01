@@ -10,7 +10,7 @@ license=('GPL2')
 depends=('dkms' 'subversion' 'linux-headers')
 conflicts=("${_pkgbase}")
 #install=${pkgname}.install
-source=("${_pkgbase}-${pkgver}::svn+https://github.com/yangyangnau/android_kernel_xiaomi_msm8937/branches/cm-13.0/drivers/fingerprint/goodix"
+source=("${_pkgbase}-${pkgver}::svn+https://github.com/yangyangnau/android_kernel_xiaomi_msm8937/tree/cm-13.0/drivers/fingerprint/goodix"
         'gf-external.patch')
 md5sums=('SKIP'
          'SKIP')
